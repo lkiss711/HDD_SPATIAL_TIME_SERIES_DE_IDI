@@ -58,3 +58,19 @@ df_parameters_diff_with_count <- df_parameters_diff_with_count[order(-df_paramet
 
 write.csv2(df_parameters_with_count,"df_parameters_with_count.csv")
 write.csv2(df_parameters_diff_with_count,"df_parameters_diff_with_count.csv")
+
+
+
+p <- df_parameters_with_count[1,"p"]
+P <- df_parameters_with_count[1,"P"]
+q <- df_parameters_with_count[1,"q"]
+Q <- df_parameters_with_count[1,"Q"]
+d <- df_parameters_with_count[1,"d"]
+D <- df_parameters_with_count[1,"D"]
+m <- df_parameters_with_count[1,"m"]
+
+
+
+
+View(df_parameters_with_count[1,])
+
