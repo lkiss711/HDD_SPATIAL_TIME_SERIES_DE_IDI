@@ -6,6 +6,7 @@ library(forecast)
 library(dplyr)
 library(plyr)
 library(raster)
+library(TSA)
 
 datadir <- getwd()
 
@@ -62,9 +63,14 @@ for(i in 1:(length(colnames(df_parameters))-1)){
   print(table(df_parameters[,colnames(df_parameters)[[i]]]))
 }
 
+ts_periodogram_list <- list()
 
+for(i in 1:ncol(y)){
+  
+  ts_periodogram_list[[i]] <- periodogram(y[,i])
+  names(ts_periodogram_list)[[i]] <- colnames(y)[[i]]  
 
-
+}
 
 
 
