@@ -5,14 +5,22 @@
 library(forecast)
 library(dplyr)
 library(plyr)
-
+library(raster)
 
 datadir <- getwd()
 
 data_file <-  paste(datadir,"/Euro_regio_Heating.rda")
 data_file <- gsub(" ", "", data_file, fixed = TRUE)
+regio_centers_file <-  paste(datadir,"/regio_centers.rda")
+regio_centers_file <- gsub(" ", "", regio_centers_file, fixed = TRUE)
 
 data <- load(file = data_file)
+regio_centers <- load(file = regio_centers_file)
+
+gdis <- pointDistance(df_centers[,2:3], lonlat=TRUE)
+
+colnames(gdis) <- df_centers[,1]
+rownames(gdis) <- df_centers[,1]
 
 
 y <- ts(data_all_HDD_wide_spread_ts[,3:26],
@@ -46,6 +54,8 @@ df_parameters <- as.data.frame(matrix(unlist(parameters),nrow=ncol(y),byrow = T)
 df_parameters <- setNames(df_parameters, c("p", "q", "P", "Q", "m", "d", "D","drift"))
 
 write.csv2(df_parameters,"parameters.csv")
+write.csv2(gdis,"distancematrix.csv")
+
 
 for(i in 1:(length(colnames(df_parameters))-1)){
   print(colnames(df_parameters)[[i]])
