@@ -8,6 +8,31 @@ library(plyr)
 library(raster)
 library(TSA)
 
+
+
+pe <-  function(x,nfft,overlap) {
+  
+  lx <- length(x)
+  # result <- list(center=center,spread=spread)
+  nadvance=trunc(nfft*(1-overlap/100))
+  nrecs=trunc((lx-nfft*overlap/100)/nadvance)
+  Pe <- matrix( rep( 0, len=nfft), nrow = 1)
+  locseg = 1:nfft
+  for(i in 1:nrecs){
+       # MATLAB code: xseg   = x(locseg);  ???  
+       Xf <- fft(x[1:nfft])
+       Pe <-  sapply(Pe, function(x) {Pe+abs(Xf^2/nfft)})
+       locseg = locseg + nadvance;  
+      }
+  Pe=Pe/nrecs;
+  Pe[1]= mean(Pe[,2:3])
+  se=exp(mean(log(Pe(2:nfft))))
+  Pe=Pe/se
+  result <- c(Pe,se)
+  return(result)
+}
+
+
 datadir <- getwd()
 
 data_file <-  paste(datadir,"/Euro_regio_Heating.rda")
