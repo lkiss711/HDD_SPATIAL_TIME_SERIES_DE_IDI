@@ -10,26 +10,36 @@ library(TSA)
 
 
 
-pe <-  function(x,nfft,overlap) {
-  
+pe_vector <-  function(x,nfft,overlap) {
   lx <- length(x)
-  # result <- list(center=center,spread=spread)
   nadvance=trunc(nfft*(1-overlap/100))
   nrecs=trunc((lx-nfft*overlap/100)/nadvance)
-  Pe <- matrix( rep( 0, len=nfft), nrow = 1)
+  Pe <- rep( 0, len=nfft)
   locseg = 1:nfft
   for(i in 1:nrecs){
-       # MATLAB code: xseg   = x(locseg);  ???  
-       Xf <- fft(x[1:nfft])
-       Pe <-  sapply(Pe, function(x) {Pe+abs(Xf^2/nfft)})
+       xseg   = x[locseg]  
+       Xf <- fft(xseg)
+       Pe <-  sapply(Pe, function(x) {Pe+abs(Xf)^2/nfft})
        locseg = locseg + nadvance;  
       }
   Pe=Pe/nrecs;
   Pe[1]= mean(Pe[,2:3])
-  se=exp(mean(log(Pe(2:nfft))))
+  se=exp(mean(log(Pe[2:nfft])))
   Pe=Pe/se
   result <- c(Pe,se)
   return(result)
+}
+
+
+pe_matrix <- function(x,nfft,overlay){
+  
+  ts_periodogram_list <- list()
+  col_number <- ncol(x)
+  for(i in 1:col_number){
+    y <- x[,i]
+    ts_periodogram_list[[i]] <- pe_vector(y,nfft,overlay)
+  }
+  return(ts_periodogram_list)
 }
 
 
@@ -51,6 +61,9 @@ rownames(gdis) <- df_centers[,1]
 
 y <- ts(data_all_HDD_wide_spread_ts[,3:26],
         start =c(1974,1), end = c(2017,12), frequency = 12)
+
+sX <- c(ncol(y),nrow(y))
+lx <- sX[[2]]
 
 parameters <- list()
 coef_list <- list()
@@ -81,21 +94,6 @@ df_parameters <- setNames(df_parameters, c("p", "q", "P", "Q", "m", "d", "D","dr
 
 write.csv2(df_parameters,"parameters.csv")
 write.csv2(gdis,"distancematrix.csv")
-
-
-for(i in 1:(length(colnames(df_parameters))-1)){
-  print(colnames(df_parameters)[[i]])
-  print(table(df_parameters[,colnames(df_parameters)[[i]]]))
-}
-
-ts_periodogram_list <- list()
-
-for(i in 1:ncol(y)){
-  
-  ts_periodogram_list[[i]] <- periodogram(y[,i])
-  names(ts_periodogram_list)[[i]] <- colnames(y)[[i]]  
-
-}
 
 
 
