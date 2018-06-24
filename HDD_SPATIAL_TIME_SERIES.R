@@ -7,7 +7,7 @@ library(dplyr)
 library(plyr)
 library(raster)
 library(TSA)
-
+library(astsa)
 
 
 pe_vector <-  function(x,nfft,overlap) {
@@ -17,31 +17,29 @@ pe_vector <-  function(x,nfft,overlap) {
   Pe <- rep( 0, len=nfft)
   locseg = 1:nfft
   for(i in 1:nrecs){
-       xseg   = x[locseg]  
-       Xf <- fft(xseg)
-       Pe <-  sapply(Pe, function(x) {Pe+abs(Xf)^2/nfft})
-       locseg = locseg + nadvance;  
-      }
-  Pe=Pe/nrecs;
-  Pe[1]= mean(Pe[,2:3])
-  se=exp(mean(log(Pe[2:nfft])))
-  Pe=Pe/se
-  result <- c(Pe,se)
+    xseg   <-  x[locseg]  
+    Xf <- fft(xseg)
+    Pe <-  Pe+abs(Xf)^2 #sapply(Pe, function(x) {
+    locseg  <-  locseg + nadvance;  
+  }
+  Pe <- Pe/nrecs/nfft
+  Pe[1] <-  mean(Pe[2:3])   # [,2:3]
+  se=exp(mean(log(Pe[1:nfft])))
+  sPe <- Pe/se
+  omega <- c(0,2*pi/nfft*(1:nfft))
+  result <- list(sPe=sPe,se=se,omega=omega)
   return(result)
 }
 
 
-pe_matrix <- function(x,nfft,overlay){
-  
+pe_matrix <- function(y,nfft,overlap){
   ts_periodogram_list <- list()
-  col_number <- ncol(x)
-  for(i in 1:col_number){
-    y <- x[,i]
-    ts_periodogram_list[[i]] <- pe_vector(y,nfft,overlay)
-  }
-  return(ts_periodogram_list)
+  ts_periodogram_list <-  sapply(y, pe_vector, nfft,overlap)
+  sp <- ts_periodogram_list[seq(1, 3*length(y), by=3 )]
+  se <- ts_periodogram_list[seq(2, 3*length(y), by=3 )]
+  omega <- ts_periodogram_list[3]
+  return(list(sp=sp,se=se,omega=omega))
 }
-
 
 datadir <- getwd()
 
@@ -95,5 +93,37 @@ df_parameters <- setNames(df_parameters, c("p", "q", "P", "Q", "m", "d", "D","dr
 write.csv2(df_parameters,"parameters.csv")
 write.csv2(gdis,"distancematrix.csv")
 
+#
+#    2018.06.25
+#
+
+x <- y[,1]
+arima(x, order = c(2, 0, 0))
+par(mfrow=c(3,1))
+k = kernel("daniell", 4)
+Spx.ave = spec.pgram(x, k, taper=0, log="no")
+# abline(v=c(.25,1,2,3), lty=2)
+spObj <- spec.arma(ar=c(1,-.9), log="no", main="Autoregression")
+(sze <- exp(mean(log(spObj$spec))))
+nfft <- length(y[,1])
+# overlap <- 0
+# overlap <- 20
+overlap <- 40
+spu <- pe_vector(x,nfft,overlap)
+plot(spu$omega[1:(nfft/2)] ,spu$sPe[1:(nfft/2)]*spu$se,type='l') 
+
+sqrt(spu$se)
 
 
+par(mfrow=c(1,1))
+
+y_list <- list()
+
+for(i in 1:ncol(y)){
+  y_list[[i]] <- (y[,i])
+}
+
+spM <- pe_matrix (y_list,nfft,overlap)
+# plot(spM$omega[[1]][1:(nfft/2)], spM$sp[[1]][1:(nfft/2)],col="red",type='l')
+# lines(spM$omega[[1]][1:(nfft/2)],spM$sp[[3]][1:(nfft/2)],col="green")
+# sqrt(spM$se[[ 1]])
