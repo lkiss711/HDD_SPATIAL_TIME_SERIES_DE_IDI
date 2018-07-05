@@ -189,5 +189,6 @@ ts_matrix <- data_all_HDD_wide_spread_ts[3:ncol(data_all_HDD_wide_spread_ts)]
 
 diff_matrix <- differences_matrix(ts_matrix)
 
+write.csv2(diff_matrix,"diffmatrix.csv")
 
 
