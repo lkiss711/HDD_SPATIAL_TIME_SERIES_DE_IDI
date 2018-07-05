@@ -41,6 +41,59 @@ pe_matrix <- function(y,nfft,overlap){
   return(list(sp=sp,se=se,omega=omega))
 }
 
+difference_vector <- function(v){
+  lv <- length(v)
+  result_vector <- c()
+  temp_vector <- c()
+    for(i in 1:(lv-1)){
+    op_1 <- v[i]
+    op_2_vector <- tail(v,lv-i)
+    temp_vector <- c()
+    for(j in 1:length(op_2_vector)){
+      op_2 <- op_2_vector[[j]]
+      temp_vector <- c(temp_vector,abs(op_1 - op_2))
+    }
+    result_vector <- c(result_vector,temp_vector)
+  }
+  return(result_vector)    
+}
+
+
+differences_matrix <- function(m){
+  nc <- ncol(m)
+  nr <- ((nrow(m)-1)*nrow(m))/2           
+  
+  result_matrix <- matrix(nrow = nr,ncol = nc)
+  
+  for(i in 1:nc){
+    v <- unname(unlist(m[,i]))
+    temp_vector <- difference_vector(v)
+    result_matrix[,i] <- temp_vector
+    # print(i)
+  }
+  
+  
+  return(result_matrix)    
+}
+
+matrix_mirror <- function(m){
+  
+  m_m <- m
+  
+  for(i in 1:ncol(m)){
+    for(j in 1:nrow(m)){
+      if(i != j){
+        m_m[j,i] <- m[i,j] 
+      }
+      else{
+        m_m[i,j] <- m[i,j]
+      }
+    }
+  }
+  
+  return(m_m);
+}
+
 datadir <- getwd()
 
 data_file <-  paste(datadir,"/Euro_regio_Heating.rda")
@@ -52,6 +105,9 @@ data <- load(file = data_file)
 regio_centers <- load(file = regio_centers_file)
 
 gdis <- pointDistance(df_centers[,2:3], lonlat=TRUE)
+gdis <- matrix_mirror(gdis)
+
+
 
 colnames(gdis) <- df_centers[,1]
 rownames(gdis) <- df_centers[,1]
@@ -66,7 +122,6 @@ lx <- sX[[2]]
 parameters <- list()
 coef_list <- list()
 
-print(ncol(y))
 
 for(i in 1:ncol(y)){
   y1 <- y[,i]
@@ -127,3 +182,12 @@ spM <- pe_matrix (y_list,nfft,overlap)
 # plot(spM$omega[[1]][1:(nfft/2)], spM$sp[[1]][1:(nfft/2)],col="red",type='l')
 # lines(spM$omega[[1]][1:(nfft/2)],spM$sp[[3]][1:(nfft/2)],col="green")
 # sqrt(spM$se[[ 1]])
+
+
+
+ts_matrix <- data_all_HDD_wide_spread_ts[3:ncol(data_all_HDD_wide_spread_ts)]
+
+diff_matrix <- differences_matrix(ts_matrix)
+
+
+
