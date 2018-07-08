@@ -3,11 +3,11 @@
 # HDD_SPATIAL_TIME_SERIES_DE_IDI ver2.0
 
 library(forecast)
-library(dplyr)
-library(plyr)
+# library(dplyr)
+# library(plyr)
 library(raster)
-library(TSA)
-library(astsa)
+# library(TSA)
+# library(astsa)
 
 
 pe_vector <-  function(x,nfft,overlap) {
@@ -43,38 +43,49 @@ pe_matrix <- function(y,nfft,overlap){
 
 difference_vector <- function(v){
   lv <- length(v)
-  result_vector <- c()
-  temp_vector <- c()
-    for(i in 1:(lv-1)){
-    op_1 <- v[i]
-    op_2_vector <- tail(v,lv-i)
-    temp_vector <- c()
-    for(j in 1:length(op_2_vector)){
-      op_2 <- op_2_vector[[j]]
-      temp_vector <- c(temp_vector,abs(op_1 - op_2))
-    }
-    result_vector <- c(result_vector,temp_vector)
+  v.nagy <- rep(v[1:(lv-1)],seq(from=lv-1,to=1)) 
+  v.uj <- c()
+  for (k in c(2:(lv))) {
+    v.uj <- c(v.uj,v[k:lv])
   }
-  return(result_vector)    
+  return(v.uj-v.nagy)    
 }
 
 
-differences_matrix <- function(m){
-  nc <- ncol(m)
-  nr <- ((nrow(m)-1)*nrow(m))/2           
-  
-  result_matrix <- matrix(nrow = nr,ncol = nc)
-  
-  for(i in 1:nc){
-    v <- unname(unlist(m[,i]))
-    temp_vector <- difference_vector(v)
-    result_matrix[,i] <- temp_vector
-    # print(i)
-  }
-  
-  
-  return(result_matrix)    
-}
+# difference_vector <- function(v){
+#   lv <- length(v)
+#   result_vector <- c()
+#   temp_vector <- c()
+#     for(i in 1:(lv-1)){
+#     op_1 <- v[i]
+#     op_2_vector <- tail(v,lv-i)
+#     temp_vector <- c()
+#     for(j in 1:length(op_2_vector)){
+#       op_2 <- op_2_vector[[j]]
+#       temp_vector <- c(temp_vector,abs(op_1 - op_2))
+#     }
+#     result_vector <- c(result_vector,temp_vector)
+#   }
+#   return(result_vector)    
+# }
+
+
+# differences_matrix <- function(m){
+#   nc <- ncol(m)
+#   nr <- ((nrow(m)-1)*nrow(m))/2           
+#   
+#   result_matrix <- matrix(nrow = nr,ncol = nc)
+#   
+#   for(i in 1:nc){
+#     v <- unname(unlist(m[,i]))
+#     temp_vector <- difference_vector(v)
+#     result_matrix[,i] <- temp_vector
+#     # print(i)
+#   }
+#   
+#   
+#   return(result_matrix)    
+# }
 
 matrix_mirror <- function(m){
   
@@ -187,8 +198,9 @@ spM <- pe_matrix (y_list,nfft,overlap)
 
 ts_matrix <- data_all_HDD_wide_spread_ts[3:ncol(data_all_HDD_wide_spread_ts)]
 
-diff_matrix <- differences_matrix(ts_matrix)
-
+# diff_matrix <- differences_matrix(ts_matrix)
+diff_matrix <- apply(ts_matrix,2,difference_vector)
 write.csv2(diff_matrix,"diffmatrix.csv")
+
 
 
