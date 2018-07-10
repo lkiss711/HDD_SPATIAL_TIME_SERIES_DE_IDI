@@ -87,23 +87,23 @@ difference_vector <- function(v){
 #   return(result_matrix)    
 # }
 
-matrix_mirror <- function(m){
-  
-  m_m <- m
-  
-  for(i in 1:ncol(m)){
-    for(j in 1:nrow(m)){
-      if(i != j){
-        m_m[j,i] <- m[i,j] 
-      }
-      else{
-        m_m[i,j] <- m[i,j]
-      }
-    }
-  }
-  
-  return(m_m);
-}
+# matrix_mirror <- function(m){
+# 
+#   m_m <- m
+# 
+#   for(i in 1:ncol(m)){
+#     for(j in 1:nrow(m)){
+#       if(i != j){
+#         m_m[j,i] <- m[i,j]
+#       }
+#       else{
+#         m_m[i,j] <- m[i,j]
+#       }
+#     }
+#   }
+# 
+#   return(m_m);
+# }
 
 datadir <- getwd()
 
@@ -116,9 +116,12 @@ data <- load(file = data_file)
 regio_centers <- load(file = regio_centers_file)
 
 gdis <- pointDistance(df_centers[,2:3], lonlat=TRUE)
-gdis <- matrix_mirror(gdis)
 
+View(gdis)
 
+gdisV <- gdis[lower.tri(gdis, diag = FALSE)]
+
+View(gdisV)
 
 colnames(gdis) <- df_centers[,1]
 rownames(gdis) <- df_centers[,1]
@@ -134,21 +137,21 @@ parameters <- list()
 coef_list <- list()
 
 
-for(i in 1:ncol(y)){
-  y1 <- y[,i]
-
-  AuModel <- auto.arima(y1,  max.p=5, max.q=5,
-                        max.P=3, max.Q=3, max.order=8, max.d=2, max.D=1, 
-                        start.p=1, start.q=1, start.P=1, start.Q=1)
-  
-
-  
-  parameters[[i]] <- AuModel$arma
-  coef_list[[i]] <- AuModel$coef
-  new_col <- length(parameters[[i]])+1
-  parameters[[i]][[new_col]] <- coef_list[[i]][[length(coef_list[[i]])]]
-  print(parameters[[i]])
-}
+# for(i in 1:ncol(y)){
+#   y1 <- y[,i]
+# 
+#   AuModel <- auto.arima(y1,  max.p=5, max.q=5,
+#                         max.P=3, max.Q=3, max.order=8, max.d=2, max.D=1, 
+#                         start.p=1, start.q=1, start.P=1, start.Q=1)
+#   
+# 
+#   
+#   parameters[[i]] <- AuModel$arma
+#   coef_list[[i]] <- AuModel$coef
+#   new_col <- length(parameters[[i]])+1
+#   parameters[[i]][[new_col]] <- coef_list[[i]][[length(coef_list[[i]])]]
+#   print(parameters[[i]])
+# }
 
 
 df_parameters <- as.data.frame(matrix(unlist(parameters),nrow=ncol(y),byrow = T))
@@ -200,7 +203,7 @@ ts_matrix <- data_all_HDD_wide_spread_ts[3:ncol(data_all_HDD_wide_spread_ts)]
 
 # diff_matrix <- differences_matrix(ts_matrix)
 diff_matrix <- apply(ts_matrix,2,difference_vector)
-write.csv2(diff_matrix,"diffmatrix.csv")
+# write.csv2(diff_matrix,"diffmatrix.csv")
 
 
 
