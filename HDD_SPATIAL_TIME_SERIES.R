@@ -115,13 +115,15 @@ regio_centers_file <- gsub(" ", "", regio_centers_file, fixed = TRUE)
 data <- load(file = data_file)
 regio_centers <- load(file = regio_centers_file)
 
+# 3/a pont az algoritmusbol  matrix meret??? n*(m-1)*m/2
+
 gdis <- pointDistance(df_centers[,2:3], lonlat=TRUE)
 
 View(gdis)
 
 gdisV <- gdis[lower.tri(gdis, diag = FALSE)]
 
-View(gdisV)
+# View(gdisV)
 
 colnames(gdis) <- df_centers[,1]
 rownames(gdis) <- df_centers[,1]
@@ -132,6 +134,7 @@ y <- ts(data_all_HDD_wide_spread_ts[,3:26],
 
 sX <- c(ncol(y),nrow(y))
 lx <- sX[[2]]
+
 
 parameters <- list()
 coef_list <- list()
