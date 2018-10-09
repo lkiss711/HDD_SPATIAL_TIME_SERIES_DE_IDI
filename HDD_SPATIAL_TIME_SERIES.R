@@ -170,6 +170,7 @@ write.csv2(gdis,"distancematrix.csv")
 #
 
 x <- y[,1]
+View(x)
 arima(x, order = c(2, 0, 0))
 par(mfrow=c(3,1))
 k = kernel("daniell", 4)
