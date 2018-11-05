@@ -45,5 +45,7 @@ det_max_order <- function(df_orders){
   
   common_order <- orders[1,1:ncol(orders)-1]
   
+  colnames(common_order) <- c("p", "q", "P", "Q", "m", "d", "D")
+  
   return(common_order)
 }

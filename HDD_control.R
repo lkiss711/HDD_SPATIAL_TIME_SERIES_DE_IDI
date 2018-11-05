@@ -31,6 +31,7 @@ y <- ts(data_all_HDD_wide_spread_ts[,3:26],
 source("HDD_common_order.R")
 source("HDD_geo_distance.R")
 source("HDD_difference_vector.R")
+source("HDD_backshift.R")
 
 # A parameterek meghatarozasa - a fuggveny a "HDD_common_order.R" fajlban van 
 parameters <- det_common_order(y)  # ez a lépés eltart pár percig, de működik
@@ -39,6 +40,8 @@ parameters <- det_common_order(y)  # ez a lépés eltart pár percig, de működ
 # - a fuggveny a "HDD_common_order.R" fajlban van
 common_order <- det_max_order(parameters)
 # View(common_order)
+
+
 
 # A regiok foldrajzi kozeppontjanak meghatarozasa - 
 # a fuggveny a "HDD_geo_distance.R" fajlban van
