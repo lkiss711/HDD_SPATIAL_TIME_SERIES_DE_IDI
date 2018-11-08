@@ -6,25 +6,12 @@
 
 apply_backshift <- function(ts_vector,m){
   
-  first_pos <-  m + 2
+  
   ts_vector_backshift <- ts_vector
   
-  for(i in 1:length(ts_vector)){
+  ts_vector_backshift <- apply(ts_vector,1,function(x) c(diff(ts_vector,lag =  m)))
+  # test2 <- apply(test,2,function(x) c(NA, diff(x)))
     
-    if(i > m+2){
-
-      ts_vector_backshift[[i]] = ts_vector[[i]] - ts_vector[[i-1]] - ts_vector[[(i-m)]] + ts_vector[[(i-m-1)]]
-      
-    }
-    else{
-      
-      ts_vector_backshift[[i]] = NA
-    
-    }
-    
-  }
-  
-  ts_vector <- ts_vector_backshift
-  return(ts_vector)
+  return(ts_vector_backshift)
   
 }

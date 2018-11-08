@@ -1,4 +1,4 @@
-# Ez a fájl határozza meg a közös rendet az idősorokra vonatkozóan.
+# Ez a fájl határozza meg a differenciákat.
 # Kiss László 2018.10.08
 # HDD_difference_vector.R
 # Algoritmus 3/b lépés
