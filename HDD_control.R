@@ -1,11 +1,11 @@
-# Ez a fajl hajtja végre az alkalmazást, itt van a kontroll.
-# Kiss László 2018.10.08
-# HDD_CONTROL - jelenlegi fájl
-# HDD_common_order.R Algoritmus 1. lépés
-# HDD_backshift.R Algoritmus 2. lépés
-# HDD_geo_distance.R Algoritmus 3/a lépés
-# HDD_difference_vector.R Algoritmus 3/b lépés
-# 
+# This is the control file
+# László Kiss 10.08/2018
+# HDD_CONTROL - this file
+# HDD_common_order.R Step 1 of the algorithm 
+# HDD_backshift.R Step 2 of the algorithm
+# HDD_geo_distance.R Step 3/a of the algorithm
+# HDD_difference_vector.R Step 3/b of the algorithm
+ 
 
 library(forecast)
 library(raster)
@@ -13,19 +13,19 @@ library(raster)
 
 datadir <- getwd()
 
-# HDD adatok beolvasása fileba
+#Reading the Heating Degree Days data
 data_file <-  paste(datadir,"/Euro_regio_Heating.rda")
 data_file <- gsub(" ", "", data_file, fixed = TRUE)
 
-# NUTS2 regiók földrajzi középpontjának beolvasásása fileba
+#Reading the geographic data of NUTS2 regions
 regio_centers_file <-  paste(datadir,"/regio_centers.rda")
 regio_centers_file <- gsub(" ", "", regio_centers_file, fixed = TRUE)
 
-# adatfileok memóriába történő beolvasásása
+#Load datafiles to memory
 data <- load(file = data_file)
 regio_centers <- load(file = regio_centers_file)
 
-# adatfajlbol idosor konvertalas
+#Convert timeseries from data
 y <- ts(data_all_HDD_wide_spread_ts[,3:26],
         start =c(1974,1), end = c(2017,12), frequency = 12)
 
@@ -35,42 +35,42 @@ source("HDD_difference_vector.R")
 source("HDD_backshift.R")
 source("HDD_Fourier_Transform.R")
 
-# Algoritmus 1. lépés
-# A parameterek meghatarozasa - a fuggveny a "HDD_common_order.R" fajlban van 
-parameters <- det_common_order(y)  # ez a lépés eltart pár percig, de működik
+# Step 1 of the algorithm
+# Determine the orders, function can be found in this file: HDD_common_order.R 
+parameters <- det_common_order(y)  # it is takes a few minutes, 
 
-# A leggyakrabban elofordulo parameterek meghatarozasa
-# - a fuggveny a "HDD_common_order.R" fajlban van
+# Find the common order
+# function can be found in this file: HDD_common_order.R 
 common_order <- det_max_order(parameters)
 # View(common_order)
 
 
-# Algoritmus 2. lépés
-# A backshift operátor alkalmazása
-# - a fuggveny a "HDD_backshift.R" fajlban van
+# Step 2 of the algorithm
+# Apply the backshift operator to timeseries data
+# function can be found in this file: HDD_backshift.R
 y <- apply_backshift(y,12)
 
 
-# Algoritmus 3/a lépés
-# A regiok foldrajzi kozeppontjanak meghatarozasa - 
-# a fuggveny a "HDD_geo_distance.R" fajlban van
+# Step 3/a of the algorithm
+# Calculate the distances between the geographical centers of NUTS2 regions  
+# function can be found in this file: HDD_geo_distance.R
 geo_distance <- det_geo_distance(df_centers)
 
 # View(geo_distance)
 # dif_vector <- difference_vector(geo_distance)
 # View(dif_vector)
 
-# Algoritmus 3/b lépés
-# A differencia matrix meghatarozasa - 
-# a fuggveny a "HDD_difference_vector.R" fajlban van
+# Step 3/b of the algorithm
+# Determine the matrix of differencies
+# function can be found in this file: HDD_difference_vector.R
 ts_matrix <- data_all_HDD_wide_spread_ts[3:ncol(data_all_HDD_wide_spread_ts)]
 diff_matrix <- apply(ts_matrix,1,difference_vector)
 
 
 
-# Algoritmus 3/c lépés
-# A differencia matrix meghatarozasa - 
-# a fuggveny a "HDD_Fourier_Transform.R" fajlban van
+# Step 3/c of the algorithm
+# Calculate the smoothed periodogram 
+# function can be found in this file: HDD_Fourier_Transform.R
 
 y_list <- list()
 

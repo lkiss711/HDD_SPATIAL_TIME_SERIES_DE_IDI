@@ -1,7 +1,7 @@
-# Ez a fájl alkalmazza a BACKSHIFT operátort az idősorokra vonatkozóan.
-# Kiss László 2018.11.05
-# HDD_backshift.R
-# Algoritmus 2. lépés
+# Apply the backshift operator to timeseries data
+# László Kiss 2018.11.05
+# HDD_backshift.R 
+# Step 2 of the algorithm
 
 
 apply_backshift <- function(ts_vector,m){

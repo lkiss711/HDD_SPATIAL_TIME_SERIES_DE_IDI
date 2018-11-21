@@ -1,3 +1,10 @@
+# Calculate the smoothed periodogram
+# László Kiss 2018.11.05
+# HDD_Fourier_Transform.R 
+# Step 3/c of the algorithm
+
+
+
 pe_vector <-  function(x,nfft,overlap) {
   lx <- length(x)
   nadvance=trunc(nfft*(1-overlap/100))

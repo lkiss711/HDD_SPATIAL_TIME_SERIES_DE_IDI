@@ -1,7 +1,7 @@
-# Ez a fájl határozza meg a földrajzi távolságot a régió középpontjai között.
-# Kiss László 2018.10.08
-# HDD_geo_distance.R
-# Algoritmus 3/a lépés
+# Calculate the distances between the geographical centers of NUTS2 regions  
+# László Kiss 2018.11.05
+# HDD_geo_distance.R 
+# Step 3/a of the algorithm
 
 library(raster)
 

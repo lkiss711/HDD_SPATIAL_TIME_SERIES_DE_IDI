@@ -1,7 +1,7 @@
-# Ez a fájl határozza meg a differenciákat.
-# Kiss László 2018.10.08
-# HDD_difference_vector.R
-# Algoritmus 3/b lépés
+# Determine the matrix of differencies
+# László Kiss 2018.11.05
+# HDD_difference_vector.R 
+# Step 3/b of the algorithm
 
 
 difference_vector <- function(v){

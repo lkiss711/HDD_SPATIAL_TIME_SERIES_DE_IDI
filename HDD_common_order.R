@@ -1,7 +1,8 @@
-# Ez a fájl határozza meg a közös rendet az idősorokra vonatkozóan.
-# Kiss László 2018.10.08
-# HDD_common_order.R
-# Algoritmus 1. lépés
+# Determine the orders and find the common order
+# László Kiss 2018.11.05
+# HDD_backshift.R 
+# Step 1 of the algorithm
+
 
 library(plyr)
 
