@@ -20,7 +20,7 @@ pe_vector <-  function(x,nfft,overlap) {
   Pe <- Pe/nrecs/nfft
   Pe[1] <-  mean(Pe[2:3])   # [,2:3]
   se=exp(mean(log(Pe[1:nfft])))
-  sPe <- Pe/se
+  sPe <- Pe/se1
   omega <- c(0,2*pi/nfft*(1:nfft))
   result <- list(sPe=sPe,se=se,omega=omega)
   return(result)
