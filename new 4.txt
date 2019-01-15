@@ -1,0 +1,58 @@
+1. R script (analizal, szimulal)
+2. cikk (JTSA cikk elemzése, megértése, rövid összefoglalás, formalizmus, adatok, sztochasztikus modell cél előrejelzés)
+3. Irodalmazás (HDD -re vonatkozó)
+4. Angolul ez a folyamat leírva 
+
+
+
+
+
+abra - osszes idosorral
+terkep a centrumokkal
+mssing data szamtani kozep, differencialas nfft = 2^10 (egy idosorban levo adatok szama 70-80%)
+SARIMA Whittle likeliyhood  
+
+
+
+function wh=whittleARMAmS(periM,p,D,egyh)
+% peri matrix oszlop a periodogramm!!
+sp=size(periM);
+nfft=sp(1);
+ArP=[1 egyh(1:p)];
+MaP=[1 egyh(p+1:end)];
+gN1=VarNug(ArP,MaP,D,2*nfft-2)';
+wh=mean(mean(periM./gN1));
+
+----------------------
+
+
+
+
+
+function gN=VarNug(ArP,MaP,D,nfft)  /// 
+% polinom együtthatók teljes!!//
+% D távolságok
+omega=0:1/nfft:1/2;  % omega_k=2*pi*k/n, k=0,1,...,[n/2     
+z=exp(-1i*2*pi*omega);  % z(1)
+x1=polyval(fliplr(ArP),z);  %polinomok a z helyen x1(1) 
+x2=polyval(fliplr(MaP),z); % x2(1)
+g=abs(x2./x1).^2; % plot(g)
+cv=sqrt(1./g/2); %vector nincs szigma a g-ben? plot(cv)
+Cm=(D'*cv).*besselk(1,D'*cv); % plot((1-Cm))
+gm=kron(ones(length(D),1),g);
+gN=gm.*(1-Cm); %  plot((1-Cm))
+se=exp(mean(log(gN),2));% 
+gN=gN./kron(ones(1,nfft/2+1),se);% plot((gN))
+
+
+
+
+
+SARIMA egyutthatok be(p,q,P,Q)  -> spektrum ki
+polinomok
+
+
+függvény(együtthatók, frekvenciák) return vektor
+
+
+non linear squares
