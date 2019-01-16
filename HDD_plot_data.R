@@ -21,6 +21,7 @@ p_ts <- plot_ly(data = data2plot, x = ~time)
 p_ts <-   add_lines(p_ts,y = ~BE10 ,name = 'BE10', visible = T, line = list(width = 4, color = "#00587b"))
 p_ts <- p_ts %>%   layout(title = 'Heating Degree Days in Benelux States by NUTS2 regions')
 
+
 for(ds in NUTS2_codes$geo){
   
   if(ds != 'BE10'){
@@ -83,4 +84,31 @@ p_ts
 options(browser = 'false')
 api_create(p_ts, filename = "hdd_ts_by_nuts2")
 
+p <- plot_ly(data2plot, x = ~time, y = ~BE10, name = 'BE10', type = 'scatter', mode = 'lines+markers') %>% 
+  add_trace(y = ~BE21, name = 'BE21') %>%
+  add_trace(y = ~BE21, name = 'BE21') %>% 
+  add_trace(y = ~BE22, name = 'BE22') %>%
+  add_trace(y = ~BE23, name = 'BE23') %>% 
+  add_trace(y = ~BE24, name = 'BE24') %>% 
+  add_trace(y = ~BE25, name = 'BE25') %>% 
+  add_trace(y = ~BE31, name = 'BE31') %>% 
+  add_trace(y = ~BE32, name = 'BE32') %>%
+  add_trace(y = ~BE33, name = 'BE33') %>% 
+  add_trace(y = ~BE34, name = 'BE34') %>% 
+  add_trace(y = ~BE35, name = 'BE35') %>% 
+  add_trace(y = ~LU00, name = 'LU00') %>% 
+  add_trace(y = ~NL11, name = 'NL11') %>% 
+  add_trace(y = ~NL12, name = 'NL12') %>%
+  add_trace(y = ~NL13, name = 'NL13') %>% 
+  add_trace(y = ~NL21, name = 'NL21') %>% 
+  add_trace(y = ~NL22, name = 'NL22') %>%
+  add_trace(y = ~NL23, name = 'NL23') %>%
+  add_trace(y = ~NL31, name = 'NL31') %>% 
+  add_trace(y = ~NL32, name = 'NL32') %>%
+  add_trace(y = ~NL33, name = 'NL33') %>% 
+  add_trace(y = ~NL34, name = 'NL34') %>% 
+  add_trace(y = ~NL41, name = 'NL41') %>% 
+  add_trace(y = ~NL42, name = 'NL42')
 
+
+p
