@@ -7,8 +7,8 @@ library("eurostat")
 library("plotly")
 
 
-# Sys.setenv("plotly_username"="lkiss711")
-# Sys.setenv("plotly_api_key"="")
+Sys.setenv("plotly_username"="lkiss711")
+Sys.setenv("plotly_api_key"="")
 
 NUTS2_codes <- data.frame(colnames(data_all_HDD_wide_spread_ts[,3:26]))
 colnames(NUTS2_codes) = c("geo")
@@ -82,8 +82,9 @@ p_ts <-
 p_ts
 
 options(browser = 'false')
-api_create(p_ts, filename = "hdd_ts_by_nuts2")
+# api_create(p_ts, filename = "hdd_ts_by_nuts2")
 
+p <- plot_ly(data2plot,x = ~time)
 p <- plot_ly(data2plot, x = ~time, y = ~BE10, name = 'BE10', type = 'scatter', mode = 'lines+markers') %>% 
   add_trace(y = ~BE21, name = 'BE21') %>%
   add_trace(y = ~BE21, name = 'BE21') %>% 
@@ -112,3 +113,11 @@ p <- plot_ly(data2plot, x = ~time, y = ~BE10, name = 'BE10', type = 'scatter', m
 
 
 p
+
+options(browser = 'false')
+# api_create(p, filename = "hdd_ts_all_by_nuts2")
+
+
+p_pred <- plot_ly(pred_ts,x = ~time)
+p <- plot_ly(data2plot, x = ~time, y = ~BE10, name = 'BE10', type = 'scatter', mode = 'lines+markers') %>% 
+  
